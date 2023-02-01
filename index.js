@@ -14,11 +14,6 @@ app.use(express.urlencoded({ extended: false }));
 // app.use(express.static(path.join(__dirname, 'public')));
 
 app.use("/openai", require("./routes/openaiRoutes"));
-app.use(
-  cors({
-    origin: "*",
-  })
-);
 
 app.get("/", (req, res) => console.log("Hello World! Server is running."));
 

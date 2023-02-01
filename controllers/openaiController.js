@@ -15,24 +15,18 @@ let large = "1024x1024";
 
 const generateImage = async (req, res) => {
 
-  console.log(req, res)
-
   const { prompt, size } = req.body;
 
-  const imageSize = size === "small" ? small : size === "medium" ? medium : large;
+  const imageSize =
+    size === "small" ? small : size === "medium" ? medium : large;
 
   try {
-    const response = await openai.createImage({
-      prompt,
-      n: 1,
-      size: imageSize,
-    });
+    const response = await openai.createImage(req.body);
     const imageUrl = response.data.data[0].url;
     res.status(200).json({ success: true, data: imageUrl });
   } catch (error) {
     handleErrors(error, res);
   }
-
 };
 
 const generateVariations = async (req, res) => {

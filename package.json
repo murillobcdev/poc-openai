@@ -1,14 +1,14 @@
 {
-  "name": "nodejs-openapi-image",
+  "name": "poc-openai-1",
   "version": "1.0.0",
   "description": "Generate images using OpenAI",
   "main": "index.js",
   "scripts": {
-    "start": "node index",
+    "start": "node index.js",
     "dev": "nodemon index"
   },
   "keywords": [],
-  "author": "Brad Traversy",
+  "author": "Innova Dev Team",
   "license": "MIT",
   "dependencies": {
     "dotenv": "^16.0.3",

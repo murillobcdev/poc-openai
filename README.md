@@ -6,7 +6,6 @@ This is a simple image generator built with Node.js and Express that uses [OpenA
 
 ## Usage
 
-Rename the `example.env` file to `.env`.
 
 Generate an API KEY at [OpenAI](https://beta.openai.com/) and add it to the `.env` file.
 
@@ -24,4 +23,6 @@ npm start
 
 Visit `http://localhost:5000` in your browser.
 
-The endpoint is at `POST http://localhost:5000/openai/generateimage`.
+`POST http://localhost:5000/openai/generateimage`. To generate an image.
+`POST http://localhost:5000/openai/generatevariation`. To generate variations of an image.
+`POST http://localhost:5000/openai/generateedition`. To edit an image.

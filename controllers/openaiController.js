@@ -1,10 +1,11 @@
+import { environment } from "../environment";
 const { Configuration, OpenAIApi } = require("openai");
 const formidable = require("formidable");
 const fs = require("fs");
 
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-  organization: process.env.OPENAI_ORGANIZATION,
+  apiKey: environment.OPENAI_API_KEY,
+  organization: environment.OPENAI_ORGANIZATION,
 });
 
 const openai = new OpenAIApi(configuration);

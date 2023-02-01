@@ -86,7 +86,6 @@ const generateEdition = async (req, res) => {
           );
 
           res.status(200).json({ success: true, _v: responseEdition.data });
-
         } catch (error) {
           handleErrors(error, res);
         }

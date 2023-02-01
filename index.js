@@ -16,10 +16,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/openai", require("./routes/openaiRoutes"));
 app.use(
   cors({
-    origin: [
-      "http://localhost:4200",
-      "https://openai-innova-aatb.up.railway.app",
-    ],
+    origin: "*",
   })
 );
 

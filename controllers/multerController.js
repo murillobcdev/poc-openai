@@ -1,6 +1,11 @@
 const multer = require("multer");
-const path = require("path");
 
+//salvar na memoria e devolver em buffer
+const storage = multer.memoryStorage();
+
+//se quiser salvar no disco 
+////////////////////////////
+// const path = require("path");
 // const storage = multer.diskStorage({
 //   destination: (req, file, callback) => {
 //     callback(null, path.resolve(`${__dirname}/uploads/`));
@@ -10,7 +15,5 @@ const path = require("path");
 //     callback(null, `${time}-${file.originalname}`);
 //   },
 // });
-
-const storage = multer.memoryStorage();
 
 module.exports = { storage };

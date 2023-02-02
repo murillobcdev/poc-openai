@@ -1,12 +1,8 @@
 const { Configuration, OpenAIApi } = require("openai");
-const formidable = require("formidable");
-const fs = require("fs");
-
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
   organization: process.env.OPENAI_ORGANIZATION,
 });
-
 const openai = new OpenAIApi(configuration);
 const numberOfImages = 4;
 const medium = "512x512";
@@ -35,13 +31,11 @@ const generateVariations = async (req, res) => {
       .status(400)
       .json({ success: false, data: "Formato de imagem inválido." });
   } else {
-    let file = req.file.buffer;
-
-    // console.log(req.file.buffer.write());
-
+    let bufferData = req.file.buffer;
+    bufferData.name = req.file.originalname;
     try {
       const response = await openai.createImageVariation(
-        fs.createReadStream(file),
+        bufferData,
         numberOfImages,
         medium
       );
@@ -53,36 +47,41 @@ const generateVariations = async (req, res) => {
 };
 
 const generateEdition = async (req, res) => {
-  const { prompt, size } = req.body;
-  const imageSize =
-    size === "small" ? small : size === "medium" ? medium : large;
-  const numberOfImages = 4;
-  let form = new formidable.IncomingForm();
+  
+  let maxImagesSupported = 2;
 
-  form.parse(req, function (error, fields, file) {
+  req.files.forEach((file) => {
+    if (file.mimetype != "image/png") {
+      return res
+        .status(400)
+        .json({ success: false, data: "Formato de imagem inválido." });
+    }
+  });
+
+  if (req.files.length > maxImagesSupported) {
+    return res.status(400).json({
+      success: false,
+      data: "Você só pode enviar duas imagens. A imagem a ser modificada e a máscara.",
+    });
+  } else {
+    let prompt = req.body.prompt;
+    let image = req.files[0].buffer;
+    let mask = req.files[1].buffer;
+    image.name = req.files[0].originalname;
+    mask.name = req.files[1].originalname;
     try {
-      let filepath = file.upload.filepath;
-      let newpath = "C:/upload-example/";
-      newpath += file.upload.originalFilename;
-
-      fs.rename(filepath, newpath, async function () {
-        try {
-          const responseEdition = await openai.createImageEdit(
-            fs.createReadStream(newpath),
-            prompt,
-            numberOfImages,
-            imageSize
-          );
-
-          res.status(200).json({ success: true, _v: responseEdition.data });
-        } catch (error) {
-          handleErrors(error, res);
-        }
-      });
+      const response = await openai.createImageEdit(
+        image,
+        mask,
+        prompt,
+        numberOfImages,
+        medium
+      );
+      res.status(200).json({ success: true, data: response.data });
     } catch (error) {
       handleErrors(error, res);
     }
-  });
+  }
 };
 
 function handleErrors(error, res) {

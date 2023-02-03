@@ -1,12 +1,15 @@
 const { Configuration, OpenAIApi } = require("openai");
+
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
   organization: process.env.OPENAI_ORGANIZATION,
 });
+
 const openai = new OpenAIApi(configuration);
 const numberOfImages = 4;
 const medium = "512x512";
 
+//função para gerar uma imagem baseada na descrição
 const generateImage = async (req, res) => {
   if (req.body) {
     const { prompt, size } = req.body;
@@ -25,6 +28,7 @@ const generateImage = async (req, res) => {
   res.json({ success: false, data: req.body });
 };
 
+//função para gerar variações da imagem
 const generateVariations = async (req, res) => {
   if (req.file.mimetype != "image/png") {
     return res
@@ -46,10 +50,9 @@ const generateVariations = async (req, res) => {
   }
 };
 
+//função para gerar uma edição baseada na imagem, na mascara e na descrição
 const generateEdition = async (req, res) => {
-  
   let maxImagesSupported = 2;
-
   req.files.forEach((file) => {
     if (file.mimetype != "image/png") {
       return res
@@ -57,7 +60,6 @@ const generateEdition = async (req, res) => {
         .json({ success: false, data: "Formato de imagem inválido." });
     }
   });
-
   if (req.files.length > maxImagesSupported) {
     return res.status(400).json({
       success: false,
@@ -66,9 +68,9 @@ const generateEdition = async (req, res) => {
   } else {
     let prompt = req.body.prompt;
     let image = req.files[0].buffer;
-    let mask = req.files[1].buffer;
+    let mask = req.files[1]?.buffer;
     image.name = req.files[0].originalname;
-    mask.name = req.files[1].originalname;
+    mask.name = req.files[1]?.originalname;
     try {
       const response = await openai.createImageEdit(
         image,
@@ -84,6 +86,7 @@ const generateEdition = async (req, res) => {
   }
 };
 
+//função para tratar os erros
 function handleErrors(error, res) {
   if (error.response) {
     console.log(error.response.status);

@@ -3,6 +3,7 @@ const dotenv = require("dotenv").config();
 const port = process.env.PORT || 5000;
 const app = express();
 const cors = require("cors");
+const path = require("path");
 
 //enable cors;
 app.use((req, res, next) => {
@@ -11,6 +12,9 @@ app.use((req, res, next) => {
   app.use(cors());
   next();
 });
+
+// Set static folder
+app.use(express.static(path.join(__dirname, "public")));
 
 // Enable body parser
 app.use(express.json());
